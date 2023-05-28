@@ -12,14 +12,17 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
-url = f'{os.getenv("JIRA_URL")}/rest/api/3/issue'
+# ref: https://developer.atlassian.com/cloud/jira/platform/rest/v3/api-group-issues/#api-group-issues
+url = f'{os.getenv("JIRA_URL")}/rest/api/3/issue/bulk'
 api_token = os.getenv("API_TOKEN")
 email = os.getenv("EMAIL")
 asignee_id = os.getenv("SEAN_ID")
 
 logger.info(f'Jira URL: {url} \n API Token: {api_token} \n Email: {email}')
 
-configs = yaml.safe_load(open("configs.yml"))
+with open('configs.yml', 'r') as file:
+  configs = yaml.safe_load(file)
+
 
 auth = HTTPBasicAuth(email, api_token)
 
@@ -29,130 +32,78 @@ headers = {
 }
 
 payload = json.dumps( {
-  "fields": {
-    "assignee": {
-      "id": asignee_id
-    },
-    # "components": [
-    #   {
-    #     "id": "10000"
-    #   }
-    # ],
-    # "customfield_10011": "JLPT N2",
-    # "customfield_10000": "09/Jun/19",
-    # "customfield_20000": "06/Jul/19 3:25 PM",
-    # "customfield_30000": [
-    #   "10000",
-    #   "10002"
-    # ],
-    # "customfield_40000": {
-    #   "content": [
-    #     {
-    #       "content": [
-    #         {
-    #           "text": "Occurs on all orders",
-    #           "type": "text"
-    #         }
-    #       ],
-    #       "type": "paragraph"
-    #     }
-    #   ],
-    #   "type": "doc",
-    #   "version": 1
-    # },
-    # "customfield_50000": {
-    #   "content": [
-    #     {
-    #       "content": [
-    #         {
-    #           "text": "Could impact day-to-day work.",
-    #           "type": "text"
-    #         }
-    #       ],
-    #       "type": "paragraph"
-    #     }
-    #   ],
-    #   "type": "doc",
-    #   "version": 1
-    # },
-    # "customfield_60000": "jira-software-users",
-    # "customfield_70000": [
-    #   "jira-administrators",
-    #   "jira-software-users"
-    # ],
-    # "customfield_80000": {
-    #   "value": "red"
-    # },
-    "description": {
-      "content": [
-        {
+  "issueUpdates": [
+    {
+      "fields": {
+        "summary": "Main order flow broken",
+        "issuetype": {
+          "id": configs['ISSUE_TYPE']['Task']
+        },
+        "priority": {
+          "id": configs['PRIORITY']['High']
+        },
+        "project": {
+          "id": "10000"
+        },
+        "duedate": "2019-05-11",
+        "assignee": {
+          "id": asignee_id
+        },
+        "customfield_10014": "STUDY2023-1075", #epic link
+        "description": {
           "content": [
             {
-              "text": "Order entry fails when selecting supplier.",
-              "type": "text"
+              "content": [
+                {
+                  "text": "Order entry fails when selecting supplier.",
+                  "type": "text"
+                }
+              ],
+              "type": "paragraph"
             }
           ],
-          "type": "paragraph"
-        }
-      ],
-      "type": "doc",
-      "version": 1
+          "type": "doc",
+          "version": 1
+        },
+      },
+      "update": {}
     },
-    "duedate": "2019-05-11",
-    # "environment": {
-    #   "content": [
-    #     {
-    #       "content": [
-    #         {
-    #           "text": "UAT",
-    #           "type": "text"
-    #         }
-    #       ],
-    #       "type": "paragraph"
-    #     }
-    #   ],
-    #   "type": "doc",
-    #   "version": 1
-    # },
-    # "fixVersions": [
-    #   {
-    #     "id": "10001"
-    #   }
-    # ],
-    "issuetype": {
-      "id": configs['ISSUE_TYPE']['TASK']
+    {
+      "fields": {
+        "summary": "Main order flow broken",
+        "issuetype": {
+          "id": configs['ISSUE_TYPE']['Task']
+        },
+        "priority": {
+          "id": configs['PRIORITY']['High']
+        },
+        "project": {
+          "id": "10000"
+        },
+        "duedate": "2019-05-11",
+        "assignee": {
+          "id": asignee_id
+        },
+        "customfield_10014": "STUDY2023-1075", #epic link
+        "description": {
+          "content": [
+            {
+              "content": [
+                {
+                  "text": "Order entry fails when selecting supplier.",
+                  "type": "text"
+                }
+              ],
+              "type": "paragraph"
+            }
+          ],
+          "type": "doc",
+          "version": 1
+        },
+      },
+      "update": {}
     },
-    # "labels": [
-    #   "bugfix",
-    #   "blitz_test"
-    # ],
-    # "parent": {
-    #   "key": "PROJ-123"
-    # },
-    # "priority": {
-    #   "id": "20000"
-    # },
-    "project": {
-      "id": "10000"
-    },
-    # "reporter": {
-    #   "id": "5b10a2844c20165700ede21g"
-    # },
-    # "security": {
-    #   "id": "10000"
-    # },
-    "summary": "Main order flow broken",
-    # "timetracking": {
-    #   "originalEstimate": "10",
-    #   "remainingEstimate": "5"
-    # },
-    # "versions": [
-    #   {
-    #     "id": "10000"
-    #   }
-    # ]
-  },
-  "update": {}
+  ]
 } )
 
 response = requests.request(
@@ -164,5 +115,3 @@ response = requests.request(
 )
 
 logger.info(f'Response: \n {json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": "))}')
-
-# print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))

@@ -1,6 +1,24 @@
 ISSUE_TYPE:
-  EPIC: 10000
-  STORY: 10001
-  TASK: 10002
-  SUB-TASK: 10003
-  Bug: 10004
+  Epic: '10000'
+  Story: '10001'
+  Task: '10002'
+  Sub-Task: '10003'
+  Bug: '10004'
+PRIORITY:
+  Highest: '1'
+  High: '2'
+  Medium: '3'
+  Low: '4'
+  Lowest: '5'
+EPIC_ID:
+  VoiceTube_Hero_Challenge: 'STUDY2023-26'
+  JLPT_N2: 'STUDY2023-3'
+  CKAD: 'STUDY2023-4'
+  Taiwanese: 'STUDY2023-65'
+  Terraform: 'STUDY2023-1073'
+  Python: 'STUDY2023-1485'
+  STYLiSH: 'STUDY2023-1075'
+PROJECT_ID:
+  STUDY_2023: 
+    id: '10000'
+    key: 'STUDY2023'
